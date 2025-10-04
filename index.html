@@ -1,0 +1,654 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tippni - Little Words, Big Impact</title>
+    <meta name="description" content="Tippni is a next-generation social platform where people share short, meaningful messages called tippnis. Coming Soon!">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='12' cy='12' r='10' fill='%23ffffff'/><path d='M8 12l2 2 4-4' stroke='%23000' stroke-width='2' fill='none'/></svg>">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        .container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1e293b 0%, #581c87 50%, #1e293b 100%);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Animated background elements */
+        .bg-animation {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .bg-circle {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        .bg-circle-1 {
+            top: 80px;
+            left: 80px;
+            width: 300px;
+            height: 300px;
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .bg-circle-2 {
+            bottom: 80px;
+            right: 80px;
+            width: 400px;
+            height: 400px;
+            background: rgba(147, 51, 234, 0.1);
+            animation-delay: 1s;
+        }
+
+        .bg-circle-3 {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            background: rgba(99, 102, 241, 0.05);
+            animation-delay: 2s;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.1); }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-400 { animation-delay: 0.4s; }
+        .delay-600 { animation-delay: 0.6s; }
+
+        /* Header */
+        header {
+            position: relative;
+            z-index: 10;
+            padding: 24px;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            color: white;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .badge {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.9);
+            transition: background-color 0.3s ease;
+        }
+
+        .badge:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .badge-icon {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Main Content */
+        main {
+            flex: 1;
+            position: relative;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .content {
+            max-width: 1000px;
+            text-align: center;
+            margin: 0 auto;
+        }
+
+        .hero {
+            margin-bottom: 48px;
+        }
+
+        .hero h1 {
+            font-size: clamp(48px, 8vw, 112px);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 24px;
+        }
+
+        .hero .tagline {
+            font-size: clamp(20px, 4vw, 32px);
+            font-weight: 300;
+            margin-bottom: 16px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .hero .subtitle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .heart-icon {
+            width: 20px;
+            height: 20px;
+            color: #ef4444;
+        }
+
+        /* Description */
+        .description {
+            max-width: 800px;
+            margin: 0 auto 48px auto;
+        }
+
+        .description p {
+            margin-bottom: 16px;
+        }
+
+        .description p:first-child {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .description p:last-child {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Countdown */
+        .countdown-section {
+            margin-bottom: 48px;
+        }
+
+        .countdown-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .countdown {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .countdown-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 24px 16px;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .countdown-value {
+            font-size: clamp(28px, 5vw, 48px);
+            font-weight: 700;
+            font-family: 'Courier New', monospace;
+            color: white;
+            margin-bottom: 4px;
+            line-height: 1;
+        }
+
+        .countdown-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Email Signup */
+        .signup-section {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .signup-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        @media (min-width: 640px) {
+            .signup-form {
+                flex-direction: row;
+            }
+        }
+
+        .email-input {
+            flex: 1;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            backdrop-filter: blur(12px);
+            transition: border-color 0.3s ease;
+        }
+
+        .email-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .email-input:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .notify-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 16px 24px;
+            background: white;
+            color: #1e293b;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            min-width: 140px;
+        }
+
+        .notify-btn:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateY(-1px);
+        }
+
+        .notify-btn-icon {
+            width: 16px;
+            height: 16px;
+        }
+
+        .signup-note {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Footer */
+        footer {
+            position: relative;
+            z-index: 10;
+            padding: 24px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        @media (min-width: 768px) {
+            .footer-content {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+        }
+
+        .copyright {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .social-link {
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .social-link:hover {
+            color: white;
+        }
+
+        .social-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(16, 185, 129, 0.9);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            z-index: 1000;
+            transform: translateX(400px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .toast.error {
+            background: rgba(239, 68, 68, 0.9);
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .countdown {
+                gap: 12px;
+            }
+            
+            .countdown-card {
+                padding: 16px 12px;
+                min-width: 70px;
+            }
+            
+            .bg-circle-1, .bg-circle-2 {
+                width: 200px;
+                height: 200px;
+            }
+            
+            .bg-circle-3 {
+                width: 400px;
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Animated background -->
+        <div class="bg-animation">
+            <div class="bg-circle bg-circle-1"></div>
+            <div class="bg-circle bg-circle-2"></div>
+            <div class="bg-circle bg-circle-3"></div>
+        </div>
+
+        <!-- Header -->
+        <header>
+            <nav>
+                <div class="logo">
+                    <i data-lucide="message-circle" class="logo-icon"></i>
+                    <span class="logo-text">Tippni</span>
+                </div>
+                <div class="badge">
+                    <i data-lucide="sparkles" class="badge-icon"></i>
+                    Coming Soon
+                </div>
+            </nav>
+        </header>
+
+        <!-- Main Content -->
+        <main>
+            <div class="content">
+                <!-- Hero Section -->
+                <div class="hero animate-fadeIn">
+                    <h1>Tippni</h1>
+                    <p class="tagline">Little Words, Big Impact</p>
+                    <div class="subtitle">
+                        <i data-lucide="heart" class="heart-icon"></i>
+                        <span>Express more with less</span>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="description animate-fadeIn delay-200">
+                    <p>Tippni is a next-generation social platform where people share short, meaningful messages called "tippnis."</p>
+                    <p>Whether it's a thought, an opinion, or a feeling — Tippni lets you express yourself through micro-messages that connect people instantly.</p>
+                </div>
+
+                <!-- Countdown -->
+                <div class="countdown-section animate-fadeIn delay-400">
+                    <h2 class="countdown-title">Launching In:</h2>
+                    <div class="countdown">
+                        <div class="countdown-card">
+                            <div class="countdown-value" id="days">00</div>
+                            <div class="countdown-label">Days</div>
+                        </div>
+                        <div class="countdown-card">
+                            <div class="countdown-value" id="hours">00</div>
+                            <div class="countdown-label">Hours</div>
+                        </div>
+                        <div class="countdown-card">
+                            <div class="countdown-value" id="minutes">00</div>
+                            <div class="countdown-label">Minutes</div>
+                        </div>
+                        <div class="countdown-card">
+                            <div class="countdown-value" id="seconds">00</div>
+                            <div class="countdown-label">Seconds</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Email Signup -->
+                <div class="signup-section animate-fadeIn delay-600">
+                    <form class="signup-form" id="emailForm">
+                        <input 
+                            type="email" 
+                            class="email-input" 
+                            id="emailInput"
+                            placeholder="Enter your email address" 
+                            required
+                        >
+                        <button type="submit" class="notify-btn">
+                            <i data-lucide="mail" class="notify-btn-icon"></i>
+                            Notify Me
+                        </button>
+                    </form>
+                    <p class="signup-note">Be the first to know when Tippni launches. No spam, we promise!</p>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer>
+            <div class="footer-content">
+                <div class="copyright">© 2025 Tippni. All rights reserved.</div>
+                <div class="social-links">
+                    <a href="#" class="social-link" aria-label="Twitter">
+                        <i data-lucide="twitter" class="social-icon"></i>
+                    </a>
+                    <a href="#" class="social-link" aria-label="Instagram">
+                        <i data-lucide="instagram" class="social-icon"></i>
+                    </a>
+                    <a href="#" class="social-link" aria-label="LinkedIn">
+                        <i data-lucide="linkedin" class="social-icon"></i>
+                    </a>
+                    <a href="#" class="social-link" aria-label="Email">
+                        <i data-lucide="mail" class="social-icon"></i>
+                    </a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Toast notification -->
+    <div id="toast" class="toast"></div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Launch date: November 15, 2025
+        const launchDate = new Date('2025-11-15T00:00:00').getTime();
+        
+        // Email signups storage (mock)
+        let emailSignups = JSON.parse(localStorage.getItem('tippniSignups') || '[]');
+
+        // Countdown timer
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = launchDate - now;
+
+            if (distance > 0) {
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                document.getElementById('days').textContent = days.toString().padStart(2, '0');
+                document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+                document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+                document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+            } else {
+                // Launch date reached
+                document.getElementById('days').textContent = '00';
+                document.getElementById('hours').textContent = '00';
+                document.getElementById('minutes').textContent = '00';
+                document.getElementById('seconds').textContent = '00';
+            }
+        }
+
+        // Start countdown timer
+        updateCountdown();
+        const countdownInterval = setInterval(updateCountdown, 1000);
+
+        // Toast notification function
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${isError ? 'error' : ''} show`;
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Email form handling
+        document.getElementById('emailForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const emailInput = document.getElementById('emailInput');
+            const email = emailInput.value.trim();
+            
+            if (email) {
+                // Check if email already exists
+                if (emailSignups.includes(email)) {
+                    showToast('You are already on the waitlist!', true);
+                    return;
+                }
+                
+                // Add email to storage (mock functionality)
+                emailSignups.push(email);
+                localStorage.setItem('tippniSignups', JSON.stringify(emailSignups));
+                
+                // Show success message
+                showToast("Thanks for joining the waitlist! We'll notify you when Tippni launches.");
+                
+                // Clear form
+                emailInput.value = '';
+            } else {
+                showToast('Please enter a valid email address.', true);
+            }
+        });
+
+        // Add smooth scroll behavior
+        document.documentElement.style.scrollBehavior = 'smooth';
+
+        // Add entrance animations with stagger
+        window.addEventListener('load', function() {
+            const animatedElements = document.querySelectorAll('.animate-fadeIn');
+            animatedElements.forEach((el, index) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    el.style.transition = 'opacity 0.8s ease-out, transform 0.8s ease-out';
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+        });
+    </script>
+</body>
+</html>
